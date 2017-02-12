@@ -1,0 +1,6 @@
+message(STATUS "Starting top CMakeLists.txt")
+project(hesiod)
+cmake_minimum_required(VERSION 2.8)
+add_subdirectory(src)
+add_subdirectory(man)
+message(STATUS "Ending top CMakeLists.txt")

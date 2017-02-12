@@ -1,0 +1,5 @@
+# ignore all (mostly build artifacts)
+*
+
+# un-ignore a few versioned files
+!.gitignore
