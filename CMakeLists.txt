@@ -2,10 +2,18 @@ cmake_minimum_required(VERSION 3.0)
 
 message(STATUS "Starting top CMakeLists.txt")
 
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+    message(FATAL_ERROR "Prevented in-tree build. This is bad practice.  Try:\n"
+    "mkdir build ; cd build ; cmake ..")
+endif(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+
 project(hesiod C)
 
 include(CheckIncludeFiles)
 include(CheckLibraryExists)
+include(CheckStructHasMember)
+include(GNUInstallDirs)
+message(MESAGE "With module GNUInstallDirs, CMAKE_INSTALL_SYSCONFDIR is ${CMAKE_INSTALL_FULL_SYSCONFDIR}" )
 
 # Set options with "-D" before naming the source path:
 # cmake -DWITH_LIBIDN=OFF ..
@@ -33,7 +41,6 @@ check_include_files("sys/socket.h" HAVE_SYS_SOCKET_H)
 #AC_TYPE_SSIZE_T
 #AC_TYPE_UID_T
 
-include(CheckStructHasMember)
 
 check_struct_has_member("struct passwd" pw_quota pwd.h HAVE_PW_QUOTA LANGUAGE C)
 check_struct_has_member("struct passwd" pw_comment pwd.h HAVE_PW_COMMENT LANGUAGE C)
@@ -54,6 +61,8 @@ check_function_exists(secure_getenv HAVE_SECURE_GETENV)
 
 message(STATUS "Writing config.h")
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
+add_definitions(-DSYSCONFDIR=\"${CMAKE_INSTALL_SYSCONFDIR}\")
 
 add_subdirectory(src)
 add_subdirectory(man)
